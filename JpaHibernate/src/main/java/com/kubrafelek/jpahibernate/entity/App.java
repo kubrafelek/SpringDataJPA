@@ -26,7 +26,8 @@ public class App {
                 inverseJoinColumns = @JoinColumn(name = "ticket_fk")
         )
         */
-    @OneToMany()
+
+    @OneToMany(mappedBy = "application")
     public List<Ticket> tickets;
 
     // On the target side, we only have to provide the name , which maps the relationship
