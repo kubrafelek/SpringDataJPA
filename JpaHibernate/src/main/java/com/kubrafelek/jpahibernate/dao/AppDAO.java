@@ -1,12 +1,17 @@
 package com.kubrafelek.jpahibernate.dao;
 
 import com.kubrafelek.jpahibernate.entity.App;
+import com.kubrafelek.jpahibernate.entity.dto.ApplicationDTO;
+
+import java.util.List;
 
 public interface AppDAO {
 
     void addApp(App application);
 
-   App getApplicationById(int applicationId);
+    App getApplicationById(int applicationId);
+
+    List<App> getByNameOwner(String name, String owner);
 
     boolean applicationExists(String name, String owner);
 
@@ -18,5 +23,5 @@ public interface AppDAO {
 
     App getApplicationWithTicketsAndReleasesV2(int applicationId);
 
-   // AppDTO getApplicationWithTicketsAndReleasesV3(int applicationId);
+    ApplicationDTO getApplicationWithTicketsAndReleasesV3(int applicationId);
 }
