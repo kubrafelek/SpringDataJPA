@@ -1,6 +1,7 @@
 package com.kubrafelek.jpahibernate.dao;
 
 import com.kubrafelek.jpahibernate.entity.Ticket;
+import com.kubrafelek.jpahibernate.entity.dto.TicketStatsByStatusDTO;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface TicketDAO {
 
     Ticket getTicketById(int ticketId);
 
-   // List<TicketStatsByStatusDTO> findTicketStats();
+    List<TicketStatsByStatusDTO> findTicketStats();
 
     boolean removeTickets(List<Ticket> tickets);
 

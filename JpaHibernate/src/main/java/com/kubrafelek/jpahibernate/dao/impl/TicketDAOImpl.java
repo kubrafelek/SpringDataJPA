@@ -2,6 +2,7 @@ package com.kubrafelek.jpahibernate.dao.impl;
 
 import com.kubrafelek.jpahibernate.dao.TicketDAO;
 import com.kubrafelek.jpahibernate.entity.Ticket;
+import com.kubrafelek.jpahibernate.entity.dto.TicketStatsByStatusDTO;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +28,37 @@ public class TicketDAOImpl implements TicketDAO {
     }
 
     @Override
+    public List<TicketStatsByStatusDTO> findTicketStats() {
+
+        /*-- SELECT new net.javaci.dbsample.springdatajpa1.entity.dto.TicketStatsByStatusDTO
+         *    ( t.status, count(t.id), min(t.createDateTime), max(t.createDateTime))
+         *    FROM Ticket t GROUP BY t.status
+         */
+
+        String jpql =
+                "SELECT new " + TicketStatsByStatusDTO.class.getCanonicalName()
+                        + "( "
+                        + "t.status, count(t.id), min(t.createDate), max(t.createDateTime) "
+                        + ") "
+                        + "FROM " + Ticket.class.getSimpleName() + " t " // class name; not the table name
+                        + "GROUP BY t.status";
+
+        return entityManager
+                .createQuery(jpql, TicketStatsByStatusDTO.class)
+                .getResultList();
+    }
+
+    @Override
     public boolean removeTickets(List<Ticket> tickets) {
-        return false;
+        for (Ticket ticket : tickets) {
+            removeTicket(ticket);
+        }
+        return true;
     }
 
     @Override
     public boolean removeTicket(Ticket ticket) {
-        return false;
+        entityManager.remove(entityManager.merge(ticket));
+        return true;
     }
 }

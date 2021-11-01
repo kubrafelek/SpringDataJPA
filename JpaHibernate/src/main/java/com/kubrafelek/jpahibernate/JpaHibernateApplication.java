@@ -6,6 +6,8 @@ import com.kubrafelek.jpahibernate.dao.TicketDAO;
 import com.kubrafelek.jpahibernate.entity.App;
 import com.kubrafelek.jpahibernate.entity.Release;
 import com.kubrafelek.jpahibernate.entity.Ticket;
+import com.kubrafelek.jpahibernate.entity.dto.ApplicationDTO;
+import com.kubrafelek.jpahibernate.entity.dto.TicketStatsByStatusDTO;
 import javafx.application.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +17,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @SpringBootApplication
@@ -53,7 +57,85 @@ public class JpaHibernateApplication implements CommandLineRunner {
 
         testReadWithIdPrimaryKey();
 
+        testReadWithJpql();
+
+        //testReadWithDTO(); hatalı
+
+        testUpdate();
+
+        //testRemove(); eksik
+
+        printDBInfo();
+
         log.info("***************App Stopped***************");
+    }
+
+    private void printDBInfo() {
+        EntityManagerFactory emf = entityManager.getEntityManagerFactory();
+        Map<String, Object> emfPropertiesMap = emf.getProperties();
+        log.info("*********************** EMF TEST **********************************************");
+        for (Map.Entry<String, Object> entry : emfPropertiesMap.entrySet()) {
+            log.info("------> " + entry.getKey() + " : " + entry.getValue());
+        }
+        log.info("********************************************************************************");
+    }
+
+    private void testRemove() {
+
+        log.info("*********************** TEST REMOVE **********************************************");
+
+        ApplicationDTO application = appDAO.getApplicationWithTicketsAndReleasesV3(1);
+
+        Integer ticketId = application.getLastTicketId();
+        ticketDAO.removeTicket(ticketDAO.getTicketById(ticketId));
+
+        Ticket removedTicket = ticketDAO.getTicketById(ticketId);
+        log.info("Is removed? {}", removedTicket == null);
+
+        log.info("*********************** TEST REMOVE END *********************************************");
+    }
+
+    private void testUpdate() {
+
+        log.info(">> TEST UPDATE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
+
+        Integer id = 1;
+        String newName = "rentcar.com";
+        String newOwner = "Ayşe Güzel";
+        boolean updateSuccess = appDAO.updateNameAndOwnerById(id, newName, newOwner);
+
+        App updated = appDAO.getApplicationById(1);
+
+        log.info("Is updated ? {}, new name: {}, new owner: {}",
+                updateSuccess, updated.getName(), updated.getOwner());
+
+        log.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ");
+
+    }
+
+    private void testReadWithDTO() {
+
+        log.info("********************************* TEST READ WITH DTO *********************************************");
+
+        /*List<TicketStatsByStatusDTO> ticketStats = ticketDAO.findTicketStats();
+        ticketStats.forEach(ts->log.info("** Status: {}, Count: {}, Min Creation: {}, Max Creation: {} ",
+                ts.getStatus(), ts.getCount(), ts.getMinCreateDateTime(), ts.getMaxCreateDateTime()));*/
+
+        List<TicketStatsByStatusDTO> findTicketStats = ticketDAO.findTicketStats();
+        findTicketStats.forEach(ts -> log.info(" - {}", ts.toString()));
+
+        log.info("************************************* TEST READ WITH DTO END *************************************");
+    }
+
+    private void testReadWithJpql() {
+
+        log.info("---------- TESTING testReadWithJpql START -----------------");
+
+        List<App> app = appDAO.getByNameOwner("buy.com", "Kübra Felek");
+        log.info("***** App found : {}", app);
+
+        log.info("---------- TESTING testReadWithJpql END -----------------");
+
     }
 
     private void testReadWithIdPrimaryKey() {
