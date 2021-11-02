@@ -67,22 +67,21 @@ public class AppDAOImpl implements AppDAO {
     @Override
     public boolean applicationReallyExists(String name, String owner) {
 
-/*        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<App> criteriaQuery = cb.createQuery(App.class);
 
         Root<App> root = criteriaQuery.from(App.class);
 
         criteriaQuery.select(root).where(
                 cb.and(
-//                        cb.equal(root.get(App_.name), name),
-//                        cb.equal(root.get(App_.owner), owner)
+                        cb.equal(root.<Set<String>>get(name), name),
+                        cb.equal(root.<Set<String>>get(owner), owner)
                 )
         );
 
         int count = entityManager.createQuery(criteriaQuery).getResultList().size();
 
-        return count > 0;*/
-        return true;
+        return count > 0;
     }
 
     @Override

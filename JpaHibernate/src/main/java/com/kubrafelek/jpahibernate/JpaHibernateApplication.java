@@ -8,7 +8,6 @@ import com.kubrafelek.jpahibernate.entity.Release;
 import com.kubrafelek.jpahibernate.entity.Ticket;
 import com.kubrafelek.jpahibernate.entity.dto.ApplicationDTO;
 import com.kubrafelek.jpahibernate.entity.dto.TicketStatsByStatusDTO;
-import javafx.application.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +57,6 @@ public class JpaHibernateApplication implements CommandLineRunner {
         testReadWithIdPrimaryKey();
 
         testReadWithJpql();
-
-        //testReadWithDTO(); hatalı
 
         testUpdate();
 
@@ -111,20 +108,6 @@ public class JpaHibernateApplication implements CommandLineRunner {
 
         log.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ");
 
-    }
-
-    private void testReadWithDTO() {
-
-        log.info("********************************* TEST READ WITH DTO *********************************************");
-
-        /*List<TicketStatsByStatusDTO> ticketStats = ticketDAO.findTicketStats();
-        ticketStats.forEach(ts->log.info("** Status: {}, Count: {}, Min Creation: {}, Max Creation: {} ",
-                ts.getStatus(), ts.getCount(), ts.getMinCreateDateTime(), ts.getMaxCreateDateTime()));*/
-
-        List<TicketStatsByStatusDTO> findTicketStats = ticketDAO.findTicketStats();
-        findTicketStats.forEach(ts -> log.info(" - {}", ts.toString()));
-
-        log.info("************************************* TEST READ WITH DTO END *************************************");
     }
 
     private void testReadWithJpql() {

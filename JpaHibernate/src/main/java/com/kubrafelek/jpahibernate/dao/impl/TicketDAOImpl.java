@@ -58,6 +58,7 @@ public class TicketDAOImpl implements TicketDAO {
 
     @Override
     public boolean removeTicket(Ticket ticket) {
+        // aynı ticket kullanamıyoruz detach state -> manage state geçirerek tekrar entity manager yönetimine geçmesini sağlıyoruz.
         entityManager.remove(entityManager.merge(ticket));
         return true;
     }
